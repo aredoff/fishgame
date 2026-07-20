@@ -19,6 +19,10 @@ git push origin v1.0.0
 
 Game at `https://<username>.github.io/fishgame/`
 
+## Install as app (PWA)
+
+On the start screen, tap **Add to Home Screen** when the button appears (Chrome/Edge on Android or desktop). Requires HTTPS (GitHub Pages).
+
 ## Controls
 
 - Tap / click — swim up (gravity pulls down)

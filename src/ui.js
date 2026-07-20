@@ -133,7 +133,7 @@ export function drawStartScreen(ctx, w, h, bestScore) {
   ctx.globalAlpha = pulse;
   ctx.fillStyle = '#FFD54F';
   ctx.font = `bold ${subSize}px sans-serif`;
-  ctx.fillText('Tap to start', w / 2, h * 0.68);
+  ctx.fillText('Tap to start', w / 2, h * 0.76);
   ctx.restore();
 }
 

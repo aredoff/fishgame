@@ -4,6 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="Dory" />
+    <meta name="theme-color" content="#1565C0" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="icon" href="./icons/icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="./icons/icon.svg" />
     <title>Dory to the Ocean</title>
     <style>
       * {
@@ -37,10 +42,35 @@
         border: none;
         touch-action: none;
       }
+      #install-btn {
+        position: fixed;
+        left: 50%;
+        bottom: max(14%, env(safe-area-inset-bottom, 0px));
+        transform: translateX(-50%);
+        z-index: 10;
+        padding: 14px 28px;
+        min-height: 44px;
+        border: none;
+        border-radius: 999px;
+        background: #1565C0;
+        color: #fff;
+        font: bold 16px sans-serif;
+        cursor: pointer;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
+      }
+      #install-btn[hidden] {
+        display: none;
+      }
+      #install-btn:active {
+        background: #0D47A1;
+      }
     </style>
   </head>
   <body>
     <canvas id="game"></canvas>
+    <button id="install-btn" type="button" hidden>Add to Home Screen</button>
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>

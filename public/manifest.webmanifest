@@ -1,0 +1,25 @@
+{
+  "name": "Dory to the Ocean",
+  "short_name": "Dory",
+  "description": "Help Dory swim through sewer pipes to the ocean!",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#2C4A3E",
+  "theme_color": "#1565C0",
+  "icons": [
+    {
+      "src": "./icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}
