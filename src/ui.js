@@ -1,9 +1,9 @@
 import { MAX_HEALTH, DORY_BLUE, DORY_YELLOW } from './config.js';
 
-export function drawHUD(ctx, w, h, friends, health, score) {
+export function drawHUD(ctx, w, h, friends, health, score, bestScore) {
   drawFriendsCounter(ctx, w, h, friends);
   drawHealthBar(ctx, w, h, health);
-  drawScore(ctx, w, h, score);
+  drawScore(ctx, w, h, score, bestScore);
 }
 
 function drawFriendsCounter(ctx, w, h, friends) {
@@ -38,14 +38,21 @@ function drawHealthBar(ctx, w, h, health) {
   ctx.restore();
 }
 
-function drawScore(ctx, w, h, score) {
+function drawScore(ctx, w, h, score, bestScore) {
   const size = Math.max(20, h * 0.032);
+  const small = size * 0.65;
+  const top = Math.max(16, h * 0.02);
   ctx.save();
   ctx.fillStyle = 'rgba(255,255,255,0.9)';
   ctx.font = `bold ${size}px sans-serif`;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'top';
-  ctx.fillText(String(Math.floor(score)), w / 2, Math.max(16, h * 0.02));
+  ctx.fillText(String(Math.floor(score)), w / 2, top);
+  if (bestScore > 0) {
+    ctx.fillStyle = 'rgba(255,255,255,0.55)';
+    ctx.font = `${small}px sans-serif`;
+    ctx.fillText(`Best: ${bestScore}`, w / 2, top + size * 1.15);
+  }
   ctx.restore();
 }
 
@@ -98,7 +105,7 @@ function drawPill(ctx, x, y, w, h, r) {
   ctx.fill();
 }
 
-export function drawStartScreen(ctx, w, h) {
+export function drawStartScreen(ctx, w, h, bestScore) {
   ctx.save();
   ctx.fillStyle = 'rgba(0,0,0,0.5)';
   ctx.fillRect(0, 0, w, h);
@@ -116,6 +123,12 @@ export function drawStartScreen(ctx, w, h) {
   ctx.fillText('Swim through the sewer pipes!', w / 2, h * 0.46);
   ctx.fillText('Tap to swim up — find friends!', w / 2, h * 0.52);
 
+  if (bestScore > 0) {
+    ctx.fillStyle = '#FFD54F';
+    ctx.font = `bold ${subSize}px sans-serif`;
+    ctx.fillText(`Best score: ${bestScore}`, w / 2, h * 0.6);
+  }
+
   const pulse = 0.8 + Math.sin(Date.now() * 0.004) * 0.2;
   ctx.globalAlpha = pulse;
   ctx.fillStyle = '#FFD54F';
@@ -124,7 +137,7 @@ export function drawStartScreen(ctx, w, h) {
   ctx.restore();
 }
 
-export function drawGameOver(ctx, w, h, score, friends) {
+export function drawGameOver(ctx, w, h, score, friends, bestScore, newRecord) {
   ctx.save();
   ctx.fillStyle = 'rgba(0,0,0,0.6)';
   ctx.fillRect(0, 0, w, h);
@@ -134,19 +147,29 @@ export function drawGameOver(ctx, w, h, score, friends) {
   ctx.font = `bold ${titleSize}px sans-serif`;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.fillText('Oops! Try again!', w / 2, h * 0.32);
+  ctx.fillText('Oops! Try again!', w / 2, h * 0.28);
 
   const subSize = Math.max(19, h * 0.03);
   ctx.fillStyle = '#E0E0E0';
   ctx.font = `bold ${subSize}px sans-serif`;
-  ctx.fillText(`Score: ${Math.floor(score)}`, w / 2, h * 0.46);
-  ctx.fillText(`Friends: ${friends}`, w / 2, h * 0.52);
+  ctx.fillText(`Score: ${Math.floor(score)}`, w / 2, h * 0.42);
+  ctx.fillText(`Best: ${bestScore}`, w / 2, h * 0.48);
+  ctx.fillText(`Friends: ${friends}`, w / 2, h * 0.54);
+
+  if (newRecord) {
+    const pulse = 0.85 + Math.sin(Date.now() * 0.006) * 0.15;
+    ctx.globalAlpha = pulse;
+    ctx.fillStyle = '#FFD54F';
+    ctx.font = `bold ${subSize * 1.1}px sans-serif`;
+    ctx.fillText('New record!', w / 2, h * 0.62);
+    ctx.globalAlpha = 1;
+  }
 
   const pulse = 0.8 + Math.sin(Date.now() * 0.004) * 0.2;
   ctx.globalAlpha = pulse;
   ctx.fillStyle = '#FFD54F';
   ctx.font = `${subSize * 0.85}px sans-serif`;
-  ctx.fillText('Tap to play again', w / 2, h * 0.66);
+  ctx.fillText('Tap to play again', w / 2, h * 0.72);
   ctx.restore();
 }
 
@@ -165,44 +188,7 @@ export function drawBackground(ctx, w, h, offset) {
   ctx.fillStyle = oceanGlow;
   ctx.fillRect(0, 0, w, h);
 
-  drawTunnelWalls(ctx, w, h, offset);
   drawSewerDetails(ctx, w, h, offset);
-}
-
-function drawTunnelWalls(ctx, w, h, offset) {
-  const wallW = Math.max(18, w * 0.04);
-
-  ctx.save();
-  for (const side of ['left', 'right']) {
-    const x = side === 'left' ? 0 : w - wallW;
-    const grad = ctx.createLinearGradient(x, 0, side === 'left' ? x + wallW : x, 0);
-    grad.addColorStop(0, '#3E3E3E');
-    grad.addColorStop(0.5, '#555');
-    grad.addColorStop(1, 'rgba(85,85,85,0.3)');
-    ctx.fillStyle = grad;
-    ctx.fillRect(x, 0, wallW, h);
-
-    ctx.strokeStyle = 'rgba(0,0,0,0.3)';
-    ctx.lineWidth = 1;
-    const brickH = h * 0.06;
-    for (let row = 0; row < h / brickH + 1; row++) {
-      const by = row * brickH;
-      ctx.beginPath();
-      ctx.moveTo(x, by);
-      ctx.lineTo(x + wallW, by);
-      ctx.stroke();
-      const shift = row % 2 === 0 ? 0 : wallW * 0.25;
-      ctx.beginPath();
-      ctx.moveTo(x + shift, by);
-      ctx.lineTo(x + shift, by + brickH);
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(x + shift + wallW * 0.5, by);
-      ctx.lineTo(x + shift + wallW * 0.5, by + brickH);
-      ctx.stroke();
-    }
-  }
-  ctx.restore();
 }
 
 function drawSewerDetails(ctx, w, h, offset) {

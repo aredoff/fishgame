@@ -6,10 +6,11 @@ const game = new Game(ctx);
 
 function resize() {
   const dpr = window.devicePixelRatio || 1;
-  const w = window.innerWidth;
-  const h = window.innerHeight;
-  canvas.width = w * dpr;
-  canvas.height = h * dpr;
+  const w = document.documentElement.clientWidth;
+  const h = document.documentElement.clientHeight;
+
+  canvas.width = Math.round(w * dpr);
+  canvas.height = Math.round(h * dpr);
   canvas.style.width = `${w}px`;
   canvas.style.height = `${h}px`;
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);

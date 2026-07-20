@@ -41,3 +41,6 @@ export const DORY_BLUE = '#1565C0';
 export const DORY_BLUE_LIGHT = '#42A5F5';
 export const DORY_YELLOW = '#FFD54F';
 export const DORY_FIN = '#1E88E5';
+
+export const MAX_FOLLOWERS = 12;
+export const STORAGE_KEY = 'dory-ocean-best';
